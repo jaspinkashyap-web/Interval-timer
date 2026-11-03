@@ -64,7 +64,7 @@ button{-webkit-tap-highlight-color:transparent}
 .brand{font-weight:600;font-size:1.1rem;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
 .brand svg{width:22px;height:22px}
 .tabs{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px}
-.tabs button{border:none;background:transparent;border-radius:7px;padding:5px 14px;font-size:.88rem;font-weight:500;cursor:pointer;color:var(--ink)}
+.tabs button{border:none;background:transparent;border-radius:7px;padding:5px 12px;font-size:.88rem;font-weight:500;cursor:pointer;color:var(--ink)}
 .tabs button[aria-pressed="true"]{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04);font-weight:600}
 
 /* ============ HERO ============ */
@@ -142,6 +142,10 @@ h2{font-size:clamp(1.6rem,4vw,2rem);font-weight:700;letter-spacing:-.03em;line-h
 .exrow .time{grid-row:1 / 3;grid-column:3;text-align:center;background:var(--fill);border-radius:999px;padding:7px 0;font-weight:600;font-variant-numeric:tabular-nums;font-size:.95rem}
 .exrow input::placeholder{color:var(--muted);opacity:.7}
 .exrow .time::placeholder{color:var(--muted);opacity:1;font-weight:500}
+.exrow .time.custom{box-shadow:inset 0 0 0 1.5px var(--pink);color:var(--pink)}
+.restline{display:flex;align-items:center;gap:8px;padding:7px 18px 7px 58px;font-size:.82rem;font-weight:600;color:var(--pink);position:relative;font-variant-numeric:tabular-nums}
+.restline::before{content:"";position:absolute;top:0;left:58px;right:0;border-top:1px solid var(--hair)}
+.restline + .exrow::before{content:"";position:absolute;top:0;left:58px;right:0;border-top:1px solid var(--hair)}
 
 textarea{display:block;width:100%;min-height:150px;border:none;background:var(--card);border-radius:18px;padding:18px;resize:vertical;font-family:var(--serif);font-size:1.15rem;line-height:1.55}
 textarea:focus{outline:none;box-shadow:inset 0 0 0 2px var(--blue)}
@@ -156,7 +160,7 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 .saved .meta{color:var(--muted);font-size:.9rem}
 
 /* Progress */
-.stats{display:grid;grid-template-columns:repeat(3,1fr)}
+.stats{display:grid;grid-template-columns:repeat(2,1fr)}
 .stat{padding:20px 18px;position:relative}
 .stat + .stat::before{content:"";position:absolute;left:0;top:18px;bottom:18px;border-left:1px solid var(--hair)}
 .stat b{display:block;font-size:clamp(2rem,6vw,2.8rem);font-weight:600;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
@@ -259,7 +263,8 @@ textarea::placeholder{color:var(--muted);opacity:.8}
     <div class="brand"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="bz" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A5CFF"/><stop offset=".5" stop-color="#8C46F0"/><stop offset="1" stop-color="#FF2D6F"/></linearGradient></defs><circle cx="12" cy="12" r="10.5" fill="url(#bz)"/><circle cx="12" cy="12" r="8.6" fill="#fff"/><path d="M12 12l4-2.3" stroke="#0A5CFF" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12l-1.6 4.6" stroke="#FF2D6F" stroke-width="1" stroke-linecap="round"/><circle cx="12" cy="12" r="1.2" fill="#FF2D6F"/></svg>Intervals</div>
     <div class="tabs" role="group" aria-label="Mode">
       <button id="tabWorkout" aria-pressed="true">Workout</button>
-      <button id="tabQuiet" aria-pressed="false">Quiet time</button>
+      <button id="tabSaved" aria-pressed="false">Saved</button>
+      <button id="tabQuiet" aria-pressed="false">Quiet</button>
     </div>
   </div>
 </header>
@@ -299,8 +304,9 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 
       <section class="block">
         <h2>Your exercises.</h2>
-        <p class="sub">Name them, add a cue, and give any one its own length. The list repeats every round.</p>
+        <p class="sub">Times and rest follow Build it automatically. Tap a time to give one exercise its own length.</p>
         <div class="card" id="exlist"></div>
+        <p class="foot" id="exfoot"></p>
       </section>
 
       <section class="block">
@@ -315,12 +321,21 @@ textarea::placeholder{color:var(--muted);opacity:.8}
         </div>
       </section>
 
+    </div>
+
+    <!-- ===== SAVED / CUSTOM WORKOUTS ===== -->
+    <div id="savedSetup" hidden>
       <section class="block">
-        <h2>Save it for later.</h2>
-        <p class="sub">Your own workouts, one tap away.</p>
-        <div class="card saved" id="savedCard">
+        <h2>Save what you built.</h2>
+        <p class="sub">Saves everything on the Workout tab. Same name replaces the old version.</p>
+        <div class="card">
           <div class="row saverow"><input id="presetName" placeholder="Name this workout" maxlength="40" aria-label="Workout name"><button class="pillbtn" id="savePreset">Save</button></div>
         </div>
+      </section>
+      <section class="block">
+        <h2>Your workouts.</h2>
+        <p class="sub">Tap one to load it and jump back to the timer.</p>
+        <div class="card saved" id="savedCard"></div>
       </section>
     </div>
 
@@ -343,12 +358,11 @@ textarea::placeholder{color:var(--muted);opacity:.8}
     </div>
 
     <!-- ===== PROGRESS (both modes) ===== -->
-    <section class="block">
+    <section class="block" id="progressBlock">
       <h2 id="logTitle">Your progress.</h2>
       <p class="sub" id="logSub">Every finished workout is saved here on this device.</p>
       <div class="card">
         <div class="stats">
-          <div class="stat"><b id="sStreak">0</b><span>day streak</span></div>
           <div class="stat"><b id="sWeek">0</b><span>min this week</span></div>
           <div class="stat"><b id="sCount">0</b><span>sessions</span></div>
         </div>
@@ -440,7 +454,8 @@ try { const raw = localStorage.getItem(KEY); if (raw) store = Object.assign(stor
 let cfg = Object.assign({}, DEFAULTS, store.current || {});
 let qcfg = Object.assign({}, QDEFAULTS, store.quiet || {});
 let mode = store.mode === 'quiet' ? 'quiet' : 'workout';
-function persist(){ store.current = cfg; store.quiet = qcfg; store.mode = mode; try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e){} }
+let view = ['workout','saved','quiet'].includes(store.view) ? store.view : mode;
+function persist(){ store.current = cfg; store.quiet = qcfg; store.mode = mode; store.view = view; try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e){} }
 
 const $ = id => document.getElementById(id);
 const fmt = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), r = s%60;
@@ -505,25 +520,33 @@ function renderExercises(){
   const list = $('exlist'); list.innerHTML = '';
   for (let i = 0; i < cfg.perRound; i++){
     const e = cfg.exercises[i];
+    if (i > 0 && cfg.restEx > 0){
+      const rl = document.createElement('div'); rl.className = 'restline'; rl.textContent = 'Rest ' + fmt(cfg.restEx);
+      list.append(rl);
+    }
     const row = document.createElement('div'); row.className = 'exrow';
     const num = document.createElement('span'); num.className = 'num'; num.textContent = i+1;
     const name = document.createElement('input'); name.className = 'nm'; name.placeholder = 'Exercise ' + (i+1); name.value = e.name;
     name.setAttribute('aria-label','Name of exercise ' + (i+1));
     name.addEventListener('input', () => { e.name = name.value; persist(); });
-    const t = document.createElement('input'); t.className = 'time'; t.placeholder = fmt(cfg.work);
-    t.value = e.work ? fmt(e.work) : '';
-    t.setAttribute('aria-label','Custom length for exercise ' + (i+1));
+    const t = document.createElement('input'); t.className = 'time' + (e.work ? ' custom' : '');
+    t.value = fmt(e.work || cfg.work);
+    t.setAttribute('aria-label','Length of exercise ' + (i+1));
+    t.addEventListener('focus', () => t.select());
     t.addEventListener('change', () => {
       const v = parseTime(t.value);
-      e.work = v ? clamp('work', v) : null;
-      t.value = e.work ? fmt(e.work) : '';
-      update();
+      e.work = (v && clamp('work', v) !== cfg.work) ? clamp('work', v) : null;
+      renderExercises(); update();
     });
     const n = document.createElement('input'); n.className = 'notes'; n.placeholder = 'Add a note';
     n.value = e.notes; n.setAttribute('aria-label','Note for exercise ' + (i+1));
     n.addEventListener('input', () => { e.notes = n.value; persist(); });
     row.append(num, name, t, n); list.append(row);
   }
+  const parts = [plural(cfg.rounds,'round')];
+  if (cfg.rounds > 1) parts.push(cfg.restRound > 0 ? fmt(cfg.restRound) + ' break between rounds' : 'no break between rounds');
+  if (cfg.prep > 0) parts.push(fmt(cfg.prep) + ' get-ready');
+  $('exfoot').textContent = 'Repeats for ' + parts.join(', ') + '.';
 }
 function renderHero(){
   const plan = buildPlan(), total = sum(plan);
@@ -550,7 +573,6 @@ function loadCfg(src){
   const keep = { sound:cfg.sound, voice:cfg.voice, vibrate:cfg.vibrate, voiceName:cfg.voiceName };
   cfg = Object.assign({}, DEFAULTS, clone(src), keep);
   renderFields(); renderExercises(); persist(); renderHero();
-  $('presetName').value = cfg.title;
   window.scrollTo({ top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }
 function renderTemplates(){
@@ -564,68 +586,77 @@ function renderTemplates(){
   });
 }
 function renderPresets(){
-  const card = $('savedCard');
-  card.querySelectorAll('.preset').forEach(r => r.remove());
-  Object.keys(store.presets).forEach(n => {
-    const p = store.presets[n];
+  const card = $('savedCard'); card.innerHTML = '';
+  const names = Object.keys(store.presets);
+  if (!names.length){
+    const em = document.createElement('div'); em.className = 'empty';
+    em.textContent = 'Nothing saved yet. Build a workout, then save it above.';
+    card.append(em); return;
+  }
+  names.forEach(n => {
+    const p = Object.assign({}, DEFAULTS, store.presets[n]);
     const row = document.createElement('div'); row.className = 'row preset';
     const load = document.createElement('button'); load.className = 'name'; load.textContent = n;
-    load.onclick = () => loadCfg(Object.assign({}, p, { title:n }));
-    const meta = document.createElement('span'); meta.className = 'meta'; meta.textContent = fmt(sum(planFor(Object.assign({}, DEFAULTS, p))));
+    load.onclick = () => { loadCfg(Object.assign({}, store.presets[n], { title:n })); setView('workout'); };
+    const meta = document.createElement('span'); meta.className = 'meta'; meta.textContent = describe(p);
     const x = document.createElement('button'); x.className = 'x'; x.textContent = '×'; x.setAttribute('aria-label','Delete ' + n);
     x.onclick = () => { delete store.presets[n]; persist(); renderPresets(); };
     row.append(load, meta, x); card.append(row);
   });
 }
+function setView(v){
+  view = v;
+  $('tabSaved').setAttribute('aria-pressed', v === 'saved');
+  $('savedSetup').hidden = v !== 'saved';
+  $('progressBlock').hidden = v === 'saved';
+  if (v === 'saved') $('presetName').value = cfg.title || '';
+  setMode(v === 'quiet' ? 'quiet' : 'workout');
+}
 function setMode(m){
   mode = m;
-  $('tabWorkout').setAttribute('aria-pressed', m === 'workout');
-  $('tabQuiet').setAttribute('aria-pressed', m === 'quiet');
-  $('workoutSetup').hidden = m !== 'workout';
-  $('quietSetup').hidden = m !== 'quiet';
+  $('tabWorkout').setAttribute('aria-pressed', view === 'workout');
+  $('tabQuiet').setAttribute('aria-pressed', view === 'quiet');
+  $('workoutSetup').hidden = view !== 'workout';
+  $('quietSetup').hidden = view !== 'quiet';
   $('logSub').textContent = m === 'quiet' ? 'Every finished quiet time is saved here on this device.' : 'Every finished workout is saved here on this device.';
   persist(); renderHero(); renderLog();
 }
 function update(){ persist(); renderHero(); }
-function renderAll(){ renderFields(); renderExercises(); renderTemplates(); renderPresets(); setMode(mode); }
+function clearOverrides(){ cfg.exercises.forEach(e => e.work = null); }
+function renderAll(){ renderFields(); renderExercises(); renderTemplates(); renderPresets(); setView(view); }
 
 document.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => {
   const k = b.dataset.step, obj = b.dataset.obj === 'q' ? qcfg : cfg;
   obj[k] = clamp(k, obj[k] + Number(b.dataset.d));
-  renderFields(); if (k === 'perRound' || k === 'work') renderExercises(); update();
+  if (obj === cfg && k === 'work') clearOverrides();
+  renderFields(); renderExercises(); update();
 }));
 ['rounds','perRound'].forEach(k => $(k).addEventListener('change', e => {
   cfg[k] = clamp(k, parseInt(e.target.value) || LIMITS[k][0]); renderFields(); renderExercises(); update();
 }));
 ['work','restEx','restRound','prep'].forEach(k => $(k).addEventListener('change', e => {
-  const v = parseTime(e.target.value); if (v !== null) cfg[k] = clamp(k, v);
-  renderFields(); if (k === 'work') renderExercises(); update();
+  const v = parseTime(e.target.value); if (v !== null) { cfg[k] = clamp(k, v); if (k === 'work') clearOverrides(); }
+  renderFields(); renderExercises(); update();
 }));
 ['sound','voice','vibrate'].forEach(k => $(k).addEventListener('change', e => { cfg[k] = e.target.checked; persist(); }));
 $('qlength').addEventListener('change', e => { const v = parseTime(e.target.value); if (v !== null) qcfg.length = clamp('length', v); renderFields(); update(); });
 $('qfocus').addEventListener('input', e => { qcfg.focus = e.target.value; persist(); });
 $('qchime').addEventListener('change', e => { qcfg.chime = e.target.checked; update(); });
 $('qhide').addEventListener('change', e => { qcfg.hideClock = e.target.checked; persist(); });
-$('tabWorkout').onclick = () => setMode('workout');
-$('tabQuiet').onclick = () => setMode('quiet');
+$('tabWorkout').onclick = () => setView('workout');
+$('tabSaved').onclick = () => setView('saved');
+$('tabQuiet').onclick = () => setView('quiet');
 $('savePreset').onclick = () => {
   const n = $('presetName').value.trim(); if (!n) { $('presetName').focus(); return; }
   cfg.title = n; store.presets[n] = clone(cfg); persist(); renderPresets(); renderHero();
+  $('savePreset').textContent = 'Saved'; setTimeout(() => $('savePreset').textContent = 'Save', 1200);
 };
 
-/* ============ LOG & STREAKS ============ */
-const dayKey = t => { const d = new Date(t); return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); };
-function streakFor(kind){
-  const days = new Set(store.log.filter(e => e.kind === kind).map(e => dayKey(e.t)));
-  const d = new Date(); if (!days.has(dayKey(d))) d.setDate(d.getDate() - 1);
-  let n = 0; while (days.has(dayKey(d))) { n++; d.setDate(d.getDate() - 1); }
-  return n;
-}
+/* ============ LOG ============ */
 function renderLog(){
   const entries = store.log.filter(e => e.kind === mode);
   const now = new Date();
   const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7)).getTime();
-  $('sStreak').textContent = streakFor(mode);
   $('sWeek').textContent = Math.round(entries.filter(e => e.t >= weekStart).reduce((a,e) => a + e.secs, 0) / 60);
   $('sCount').textContent = entries.length;
   const ul = $('loglist'); ul.innerHTML = '';
@@ -776,8 +807,6 @@ function setPaused(p){
 function finish(){
   running = false; clearInterval(ticker);
   logSession(totalDur);
-  const streak = streakFor(mode);
-  const streakText = streak > 1 ? streak + '-day streak' : 'Day one of your streak';
   const run = $('run');
   run.dataset.phase = 'done'; run.classList.remove('final');
   $('rNotes').textContent = '';
@@ -786,11 +815,11 @@ function finish(){
   $('rClock').textContent = fmt(totalDur); $('rClock').classList.toggle('long', totalDur >= 600);
   if (mode === 'quiet'){
     $('rPhase').textContent = 'Quiet time done';
-    $('rName').textContent = streakText + '.';
+    $('rName').textContent = 'Well spent.';
     chime();
   } else {
     $('rPhase').textContent = 'Workout done';
-    $('rName').textContent = streakText + '.';
+    $('rName').textContent = (cfg.title || 'Custom workout') + ' logged.';
     beep(660,150); beep(880,150,0.18); beep(1320,400,0.36); buzz([300,100,300,100,600]); say('That is the workout. Great job.');
   }
   try { wake && wake.release(); } catch(e){}
@@ -822,7 +851,6 @@ document.addEventListener('keydown', e => {
 
 loadVoices();
 renderAll();
-$('presetName').value = cfg.title;
 </script>
 </body>
 </html>
