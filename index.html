@@ -33,8 +33,9 @@
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
+:root[data-theme="dark"]{color-scheme:dark}
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
+  :root:not([data-theme="light"]){color-scheme:dark;
     --bg:#000000; --page:#000000; --card:#1C1C1E; --fill:#2C2C2E;
     --ink:#F5F5F7; --muted:#98989D; --line:#38383A; --hair:rgba(255,255,255,.1);
     --glass:rgba(22,22,24,.72);
@@ -63,6 +64,10 @@ button{-webkit-tap-highlight-color:transparent}
 .nav-in{max-width:980px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .brand{font-weight:600;font-size:1.1rem;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
 .brand svg{width:22px;height:22px}
+.brand svg .face{fill:var(--card)}
+.navr{display:flex;align-items:center;gap:8px}
+.themebtn{width:34px;height:34px;border-radius:50%;border:none;background:var(--fill);color:var(--ink);cursor:pointer;display:grid;place-items:center;flex:none}
+.themebtn svg{width:18px;height:18px}
 .tabs{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px}
 .tabs button{border:none;background:transparent;border-radius:7px;padding:5px 12px;font-size:.88rem;font-weight:500;cursor:pointer;color:var(--ink)}
 .tabs button[aria-pressed="true"]{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04);font-weight:600}
@@ -90,7 +95,6 @@ button{-webkit-tap-highlight-color:transparent}
 .timeline i{flex:1 1 0;min-width:1px;background:var(--blue);border-radius:2px}
 .timeline i.rest{background:var(--pink)}
 .timeline i.round{background:var(--pink-deep)}
-.timeline i.quiet{background:var(--blue)}
 
 /* ============ SECTIONS ============ */
 .wrap{max-width:720px;margin:0 auto;padding:0 20px 150px}
@@ -233,20 +237,6 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 .donebtns button{border:none;border-radius:999px;padding:14px 24px;font-weight:600;cursor:pointer;background:#fff;color:var(--phase)}
 .donebtns button.ghost{background:rgba(255,255,255,.18);color:inherit}
 
-/* Quiet time: calm, white, serif focus */
-.run.quietmode{--phase:var(--bg);color:var(--ink);--ring:min(62vw,36vh,400px)}
-.run.quietmode::before{background:radial-gradient(90% 60% at 50% 0%,color-mix(in srgb,var(--blue) 10%,transparent),transparent 70%)}
-.run.quietmode .runtop,.run.quietmode #prevBtn,.run.quietmode #nextBtn{display:none}
-.run.quietmode .phase{color:var(--blue)}
-.run.quietmode .exname{font-family:var(--serif);font-weight:400;font-size:clamp(1.25rem,3.6vw,1.9rem);letter-spacing:0;line-height:1.5;max-width:30ch;margin:10px 0;font-style:italic}
-.run.quietmode .ring circle{stroke-width:3}
-.run.quietmode .ring .track{stroke:var(--fill)}
-.run.quietmode .ring .prog{stroke:var(--blue)}
-.run.quietmode .clock{color:var(--ink);font-weight:300;letter-spacing:-.04em}
-.run.quietmode .controls button{background:var(--fill)}
-.run.quietmode .controls button.main,.run.quietmode .donebtns button:not(.ghost){background:var(--blue);color:#fff}
-.run.quietmode .donebtns button.ghost{background:var(--fill)}
-
 @media (max-height:560px) and (orientation:landscape){
   .run{--ring:min(46vh,300px)} .exnotes{display:none}
   .controls{padding-bottom:12px} .controls button{width:48px;height:48px} .controls button.main{width:62px;height:62px}
@@ -260,11 +250,13 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 
 <header class="nav" id="nav">
   <div class="nav-in">
-    <div class="brand"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="bz" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A5CFF"/><stop offset=".5" stop-color="#8C46F0"/><stop offset="1" stop-color="#FF2D6F"/></linearGradient></defs><circle cx="12" cy="12" r="10.5" fill="url(#bz)"/><circle cx="12" cy="12" r="8.6" fill="#fff"/><path d="M12 12l4-2.3" stroke="#0A5CFF" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12l-1.6 4.6" stroke="#FF2D6F" stroke-width="1" stroke-linecap="round"/><circle cx="12" cy="12" r="1.2" fill="#FF2D6F"/></svg>Intervals</div>
-    <div class="tabs" role="group" aria-label="Mode">
-      <button id="tabWorkout" aria-pressed="true">Workout</button>
-      <button id="tabSaved" aria-pressed="false">Saved</button>
-      <button id="tabQuiet" aria-pressed="false">Quiet</button>
+    <div class="brand"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="bz" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A5CFF"/><stop offset=".5" stop-color="#8C46F0"/><stop offset="1" stop-color="#FF2D6F"/></linearGradient></defs><circle cx="12" cy="12" r="10.5" fill="url(#bz)"/><circle class="face" cx="12" cy="12" r="8.6"/><path d="M12 12l4-2.3" stroke="#0A5CFF" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12l-1.6 4.6" stroke="#FF2D6F" stroke-width="1" stroke-linecap="round"/><circle cx="12" cy="12" r="1.2" fill="#FF2D6F"/></svg>Intervals</div>
+    <div class="navr">
+      <div class="tabs" role="group" aria-label="Section">
+        <button id="tabWorkout" aria-pressed="true">Workout</button>
+        <button id="tabSaved" aria-pressed="false">Saved</button>
+      </div>
+      <button class="themebtn" id="themeBtn" aria-label="Switch to dark mode"></button>
     </div>
   </div>
 </header>
@@ -339,24 +331,6 @@ textarea::placeholder{color:var(--muted);opacity:.8}
       </section>
     </div>
 
-    <!-- ===== QUIET TIME MODE ===== -->
-    <div id="quietSetup" hidden>
-      <section class="block">
-        <h2>Set the time.</h2>
-        <p class="sub">The screen stays on and goes quiet. A soft chime brings you back.</p>
-        <div class="card">
-          <div class="row"><label for="qlength">Length</label><div class="stp"><input id="qlength"><div class="seg"><button data-step="length" data-obj="q" data-d="-60" aria-label="Shorter">−</button><button data-step="length" data-obj="q" data-d="60" aria-label="Longer">+</button></div></div></div>
-          <div class="row"><label for="qchime">Soft chime at start and end</label><input type="checkbox" class="switch" id="qchime"></div>
-          <div class="row"><label for="qhide">Hide the clock</label><input type="checkbox" class="switch" id="qhide"></div>
-        </div>
-      </section>
-      <section class="block">
-        <h2>What you're sitting with.</h2>
-        <p class="sub">A verse, a prayer focus, or a single thought. It stays on screen the whole time.</p>
-        <textarea id="qfocus" placeholder="Be still, and know that I am God."></textarea>
-      </section>
-    </div>
-
     <!-- ===== PROGRESS (both modes) ===== -->
     <section class="block" id="progressBlock">
       <h2 id="logTitle">Your progress.</h2>
@@ -428,8 +402,7 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 const KEY = 'interval-timer:v1';
 const DEFAULTS = { title:'', rounds:3, perRound:4, work:40, restEx:20, restRound:60, prep:10,
   sound:true, voice:false, vibrate:true, voiceName:'', exercises:[] };
-const QDEFAULTS = { length:600, focus:'', chime:true, hideClock:false };
-const LIMITS = { rounds:[1,99], perRound:[1,30], work:[1,3600], restEx:[0,3600], restRound:[0,3600], prep:[0,300], length:[60,7200] };
+const LIMITS = { rounds:[1,99], perRound:[1,30], work:[1,3600], restEx:[0,3600], restRound:[0,3600], prep:[0,300] };
 
 /* ============ TEMPLATES: add or edit your own here ============ */
 const ex = (name, notes, work) => ({ name, notes: notes || '', work: work || null });
@@ -449,13 +422,14 @@ const TEMPLATES = [
       ex('Side plank left','Hips high'), ex('Side plank right','Hips high'), ex('Hollow hold','Arms by ears if you can') ] },
 ];
 
-let store = { current:null, quiet:null, presets:{}, log:[], mode:'workout' };
+let store = { current:null, presets:{}, log:[] };
 try { const raw = localStorage.getItem(KEY); if (raw) store = Object.assign(store, JSON.parse(raw)); } catch(e){}
 let cfg = Object.assign({}, DEFAULTS, store.current || {});
-let qcfg = Object.assign({}, QDEFAULTS, store.quiet || {});
-let mode = store.mode === 'quiet' ? 'quiet' : 'workout';
-let view = ['workout','saved','quiet'].includes(store.view) ? store.view : mode;
-function persist(){ store.current = cfg; store.quiet = qcfg; store.mode = mode; store.view = view; try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e){} }
+const mode = 'workout';
+let theme = store.theme === 'dark' || store.theme === 'light' ? store.theme
+  : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+let view = store.view === 'saved' ? 'saved' : 'workout';
+function persist(){ store.current = cfg; store.view = view; store.theme = theme; try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e){} }
 
 const $ = id => document.getElementById(id);
 const fmt = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), r = s%60;
@@ -492,7 +466,6 @@ function planFor(c){
   return p;
 }
 function buildPlan(){
-  if (mode === 'quiet') return [{ type:'quiet', dur:qcfg.length, label:'Quiet time', name:qcfg.focus.trim(), notes:'', round:1, ex:1 }];
   return planFor(cfg);
 }
 const sum = p => p.reduce((a,s) => a + s.dur, 0);
@@ -510,10 +483,6 @@ function renderFields(){
   ['rounds','perRound'].forEach(k => $(k).value = cfg[k]);
   ['work','restEx','restRound','prep'].forEach(k => $(k).value = fmt(cfg[k]));
   ['sound','voice','vibrate'].forEach(k => $(k).checked = cfg[k]);
-  $('qlength').value = fmt(qcfg.length);
-  $('qfocus').value = qcfg.focus;
-  $('qchime').checked = qcfg.chime;
-  $('qhide').checked = qcfg.hideClock;
 }
 function renderExercises(){
   syncExercises();
@@ -552,21 +521,12 @@ function renderHero(){
   const plan = buildPlan(), total = sum(plan);
   $('totalTime').textContent = fmt(total);
   drawTimeline($('heroTimeline'), plan);
-  if (mode === 'quiet'){
-    $('heroTitle').textContent = 'Be still.';
-    $('heroLede').textContent = 'Set the time, put the phone down, and sit with what matters.';
-    $('sumText').textContent = qcfg.chime ? 'Soft chime at start and end' : 'Silent the whole way through';
-    $('legend').hidden = true;
-    $('barTitle').textContent = 'Quiet time';
-    $('barSub').textContent = fmt(total);
-  } else {
     $('heroTitle').textContent = 'Every second, accounted for.';
     $('heroLede').textContent = 'Build your rounds, set your rest, and let the timer call it from across the room.';
     $('sumText').textContent = plural(cfg.rounds,'round') + ' of ' + plural(cfg.perRound,'exercise');
     $('legend').hidden = false;
     $('barTitle').textContent = cfg.title || 'Custom workout';
     $('barSub').textContent = describe(cfg);
-  }
   document.querySelectorAll('.tpl').forEach(b => b.setAttribute('aria-current', b.dataset.title === cfg.title));
 }
 function loadCfg(src){
@@ -610,23 +570,25 @@ function setView(v){
   $('savedSetup').hidden = v !== 'saved';
   $('progressBlock').hidden = v === 'saved';
   if (v === 'saved') $('presetName').value = cfg.title || '';
-  setMode(v === 'quiet' ? 'quiet' : 'workout');
-}
-function setMode(m){
-  mode = m;
   $('tabWorkout').setAttribute('aria-pressed', view === 'workout');
-  $('tabQuiet').setAttribute('aria-pressed', view === 'quiet');
   $('workoutSetup').hidden = view !== 'workout';
-  $('quietSetup').hidden = view !== 'quiet';
-  $('logSub').textContent = m === 'quiet' ? 'Every finished quiet time is saved here on this device.' : 'Every finished workout is saved here on this device.';
   persist(); renderHero(); renderLog();
 }
 function update(){ persist(); renderHero(); }
+const SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>';
+const MOON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>';
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  const dark = theme === 'dark';
+  $('themeBtn').innerHTML = dark ? SUN : MOON;
+  $('themeBtn').setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute('content', dark ? '#000000' : '#FFFFFF'));
+}
 function clearOverrides(){ cfg.exercises.forEach(e => e.work = null); }
 function renderAll(){ renderFields(); renderExercises(); renderTemplates(); renderPresets(); setView(view); }
 
 document.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => {
-  const k = b.dataset.step, obj = b.dataset.obj === 'q' ? qcfg : cfg;
+  const k = b.dataset.step, obj = cfg;
   obj[k] = clamp(k, obj[k] + Number(b.dataset.d));
   if (obj === cfg && k === 'work') clearOverrides();
   renderFields(); renderExercises(); update();
@@ -639,13 +601,9 @@ document.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click'
   renderFields(); renderExercises(); update();
 }));
 ['sound','voice','vibrate'].forEach(k => $(k).addEventListener('change', e => { cfg[k] = e.target.checked; persist(); }));
-$('qlength').addEventListener('change', e => { const v = parseTime(e.target.value); if (v !== null) qcfg.length = clamp('length', v); renderFields(); update(); });
-$('qfocus').addEventListener('input', e => { qcfg.focus = e.target.value; persist(); });
-$('qchime').addEventListener('change', e => { qcfg.chime = e.target.checked; update(); });
-$('qhide').addEventListener('change', e => { qcfg.hideClock = e.target.checked; persist(); });
 $('tabWorkout').onclick = () => setView('workout');
 $('tabSaved').onclick = () => setView('saved');
-$('tabQuiet').onclick = () => setView('quiet');
+$('themeBtn').onclick = () => { theme = theme === 'dark' ? 'light' : 'dark'; applyTheme(); persist(); };
 $('savePreset').onclick = () => {
   const n = $('presetName').value.trim(); if (!n) { $('presetName').focus(); return; }
   cfg.title = n; store.presets[n] = clone(cfg); persist(); renderPresets(); renderHero();
@@ -663,7 +621,7 @@ function renderLog(){
   const recent = entries.slice(-10).reverse();
   if (!recent.length){
     const li = document.createElement('li'); li.className = 'empty'; li.style.display = 'block';
-    li.textContent = mode === 'quiet' ? 'Your first quiet time will show up here.' : 'Your first workout will show up here.';
+    li.textContent = 'Your first workout will show up here.';
     ul.append(li); return;
   }
   recent.forEach(e => {
@@ -679,7 +637,7 @@ function renderLog(){
   });
 }
 function logSession(secs){
-  store.log.push({ t:Date.now(), kind:mode, title: mode === 'quiet' ? 'Quiet time' : (cfg.title || 'Custom workout'), secs });
+  store.log.push({ t:Date.now(), kind:mode, title: cfg.title || 'Custom workout', secs });
   if (store.log.length > 1000) store.log = store.log.slice(-1000);
   persist(); renderLog();
 }
@@ -695,7 +653,6 @@ function tone(freq, secs, delay, vol){
   o.connect(g).connect(ac.destination); o.start(t); o.stop(t + secs + 0.05);
 }
 const beep = (freq, ms, delay = 0) => { if (cfg.sound) tone(freq, ms/1000, delay, 0.5); };
-function chime(){ if (!qcfg.chime) return; [528, 792, 1056, 1584].forEach((f,i) => tone(f, 3.2 - i*0.5, 0, 0.22/(i+1))); }
 
 /* Warm voices, best first. Natural/Enhanced/Premium versions sound the least robotic. */
 const WARM = ['ava','jenny','aria','samantha','allison','serena','emma','sonia','libby','susan','karen','moira','tessa','google us english','google uk english female'];
@@ -733,8 +690,7 @@ $('voiceTest').onclick = () => say('Nice and easy. Next up, push-ups.', true);
 
 function buzz(pattern){ if (cfg.vibrate && navigator.vibrate) navigator.vibrate(pattern); }
 function cue(seg){
-  if (seg.type === 'quiet') chime();
-  else if (seg.type === 'work'){ beep(1050,180); beep(1050,260,0.22); buzz([200,80,200]); say(seg.name); }
+  if (seg.type === 'work'){ beep(1050,180); beep(1050,260,0.22); buzz([200,80,200]); say(seg.name); }
   else if (seg.type === 'rest'){ beep(520,450); buzz(400); say('Rest up.'); }
   else if (seg.type === 'round'){ beep(520,300); beep(400,500,0.35); buzz([400,100,400]); say('Nice work. Take a breather.'); }
 }
@@ -755,7 +711,7 @@ function startRun(){
   try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch(e){}
   drawTimeline($('rTimeline'), plan);
   $('setup').hidden = true; $('startbar').hidden = true; $('nav').hidden = true;
-  $('run').classList.add('on'); $('run').classList.toggle('quietmode', mode === 'quiet');
+  $('run').classList.add('on');
   running = true; keepAwake(); goTo(0);
   clearInterval(ticker); ticker = setInterval(tick, 50);
 }
@@ -774,7 +730,7 @@ function tick(){
   const sec = Math.ceil(remainMs / 1000);
   if (sec !== lastSec){
     lastSec = sec;
-    if (mode !== 'quiet' && sec <= 3 && sec >= 1) beep(sec === 1 ? 880 : 760, 120);
+    if (sec <= 3 && sec >= 1) beep(sec === 1 ? 880 : 760, 120);
   }
   if (remainMs <= 0){ idx < plan.length - 1 ? goTo(idx + 1) : finish(); return; }
   paint();
@@ -787,13 +743,13 @@ function paint(){
   const nxt = plan.slice(idx + 1).find(s => s.type === 'work');
   $('rNotes').textContent = (seg.type === 'rest' || seg.type === 'round') ? (nxt ? nxt.notes : '') : seg.notes;
   const secs = Math.ceil(remainMs / 1000), clock = $('rClock');
-  clock.textContent = (seg.type === 'quiet' && qcfg.hideClock) ? '' : fmt(secs);
+  clock.textContent = fmt(secs);
   clock.classList.toggle('long', secs >= 600);
   $('rRound').textContent = 'Round ' + seg.round + ' of ' + cfg.rounds;
   $('rEx').textContent = 'Exercise ' + seg.ex + ' of ' + cfg.perRound;
-  $('rNext').textContent = seg.type === 'quiet' ? '' : seg.type === 'work' ? (nxt ? 'Next: ' + nxt.name : 'Last one. Empty the tank.') : (nxt && seg.type !== 'prep' ? 'Up next: ' + nxt.name : '');
+  $('rNext').textContent = seg.type === 'work' ? (nxt ? 'Next: ' + nxt.name : 'Last one. Empty the tank.') : (nxt && seg.type !== 'prep' ? 'Up next: ' + nxt.name : '');
   $('ringProg').style.strokeDashoffset = C * (1 - Math.max(0, remainMs) / (seg.dur * 1000));
-  run.classList.toggle('final', mode !== 'quiet' && !paused && remainMs > 0 && remainMs <= 3000);
+  run.classList.toggle('final', !paused && remainMs > 0 && remainMs <= 3000);
 }
 function setPaused(p){
   paused = p;
@@ -813,15 +769,9 @@ function finish(){
   $('ringProg').style.strokeDashoffset = 0;
   [...$('rTimeline').children].forEach(el => { el.classList.add('past'); el.classList.remove('now'); });
   $('rClock').textContent = fmt(totalDur); $('rClock').classList.toggle('long', totalDur >= 600);
-  if (mode === 'quiet'){
-    $('rPhase').textContent = 'Quiet time done';
-    $('rName').textContent = 'Well spent.';
-    chime();
-  } else {
-    $('rPhase').textContent = 'Workout done';
-    $('rName').textContent = (cfg.title || 'Custom workout') + ' logged.';
-    beep(660,150); beep(880,150,0.18); beep(1320,400,0.36); buzz([300,100,300,100,600]); say('That is the workout. Great job.');
-  }
+  $('rPhase').textContent = 'Workout done';
+  $('rName').textContent = (cfg.title || 'Custom workout') + ' logged.';
+  beep(660,150); beep(880,150,0.18); beep(1320,400,0.36); buzz([300,100,300,100,600]); say('That is the workout. Great job.');
   try { wake && wake.release(); } catch(e){}
 }
 function exitRun(){
@@ -849,6 +799,7 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'Escape') exitRun();
 });
 
+applyTheme();
 loadVoices();
 renderAll();
 </script>
