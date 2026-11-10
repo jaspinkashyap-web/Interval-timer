@@ -402,11 +402,50 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 const KEY = 'interval-timer:v1';
 const DEFAULTS = { title:'', rounds:3, perRound:4, work:40, restEx:20, restRound:60, prep:10,
   sound:true, voice:false, vibrate:true, voiceName:'', exercises:[] };
-const LIMITS = { rounds:[1,99], perRound:[1,30], work:[1,3600], restEx:[0,3600], restRound:[0,3600], prep:[0,300] };
+const LIMITS = { rounds:[1,99], perRound:[1,40], work:[1,3600], restEx:[0,3600], restRound:[0,3600], prep:[0,300] };
 
 /* ============ TEMPLATES: add or edit your own here ============ */
 const ex = (name, notes, work) => ({ name, notes: notes || '', work: work || null });
 const TEMPLATES = [
+  { title:'Pre-practice primer', rounds:1, perRound:32, work:45, restEx:0, restRound:0, prep:10,
+    exercises:[
+      /* Phase 1: Tissue prep */
+      ex('Quad roll, left','Tissue prep. Gentle pressure, front of thigh', 15),
+      ex('Quad roll, right','Gentle pressure, front of thigh', 15),
+      ex('Calf roll, left','Cover upper and lower calf', 15),
+      ex('Calf roll, right','Cover upper and lower calf', 15),
+      ex('Glute massage, left','Gentle pressure around the glute', 15),
+      ex('Glute massage, right','Gentle pressure around the glute', 15),
+      ex('Foot massage, left','Roll the sole over the ball, gently', 15),
+      ex('Foot massage, right','Roll the sole over the ball, gently', 15),
+      /* Phase 2: Dynamic mobility */
+      ex('Half-kneeling hip flexor rocks','Mobility. Switch sides halfway. Squeeze the kneeling glute', 45),
+      ex("World's greatest stretch",'Alternate sides. Rotate upper back toward the raised arm', 60),
+      ex('Adductor rockbacks','Alternate sides. One leg out to the side, sit hips back', 45),
+      ex('90/90 hip switches','Torso tall, smooth hip rotation', 60),
+      ex('Knee-to-wall ankle, left','Heel down, knee tracks over toes', 30),
+      ex('Knee-to-wall ankle, right','Heel down, knee tracks over toes', 30),
+      ex('Leg swings, front to back','Switch legs halfway. Build range gradually', 45),
+      ex('Leg swings, side to side','Switch legs halfway. Build range gradually', 45),
+      /* Phase 3: Activation */
+      ex('Short-foot arch activation','Activation. Switch feet halfway. Big toe ball toward heel, toes relaxed', 45),
+      ex('Controlled calf raises','10 to 12 reps. Pressure through big toe, no ankle collapse', 45),
+      ex('Glute bridges','10 to 12 reps. Squeeze at the top, no low-back arch', 45),
+      ex('Lateral band walks, left','Slight knee bend, knees over feet', 30),
+      ex('Lateral band walks, right','Slight knee bend, knees over feet', 30),
+      ex('Reverse Nordics','Straight line knees to shoulders. Low effort, no quad burn', 45),
+      ex('Back mobility','Flexion, extension, gentle thoracic rotations', 45),
+      ex('Single-leg RDL reach, left','Slight knee bend, reach forward, stay balanced', 30),
+      ex('Single-leg RDL reach, right','Slight knee bend, reach forward, stay balanced', 30),
+      /* Phase 4: Neuromuscular priming */
+      ex('Eyes-closed balance, left','Priming. Slight knee bend, tripod engaged, control over duration', 30),
+      ex('Eyes-closed balance, right','Slight knee bend, tripod engaged', 30),
+      ex('Full-body twists','Feet shoulder-width, stay loose and relaxed', 30),
+      ex('Lymphatic hops','Small, light, quick ankle hops. Land soft', 30),
+      ex('Balance + lacrosse ball, left','Toss, catch, or circle the ball. Foot stays stable', 60),
+      ex('Balance + lacrosse ball, right','Toss, catch, or circle the ball. Foot stays stable', 60),
+      ex('Marching in place','Drive knees, opposite arm, tall posture', 60),
+    ] },
   { title:'Tabata', rounds:8, perRound:1, work:20, restEx:0, restRound:10, prep:10,
     exercises:[ ex('Burpees','All-out for 20, then 10 off') ] },
   { title:'EMOM 10', rounds:10, perRound:1, work:60, restEx:0, restRound:0, prep:10,
